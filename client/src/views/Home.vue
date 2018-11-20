@@ -6,7 +6,9 @@
       <hr class="my-4">
       <p>The Coding Garden tutorial is a very useful resource for this.</p>
       <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Sign Up!</a>
+        <router-link class="btn btn-primary btn-lg" :to="{name: 'signup' }" role="button">
+          Sign Up!
+        </router-link>
       </p>
     </div>
   </div>
