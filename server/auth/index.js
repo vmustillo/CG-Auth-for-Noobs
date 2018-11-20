@@ -1,11 +1,13 @@
 const express = require('express');
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
-const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 const db = require('../db/connection.js');
 const users = db.get('users');
 users.createIndex('username', { unique: true });
+
+const router = express.Router();
 
 const schema = Joi.object().keys({
   username: Joi.string()
@@ -83,7 +85,26 @@ router.post('/login', (req, res, next) => {
           bcrypt.compare(req.body.password, user.password).then(result => {
             if (result) {
               // they sent the correct password
-              res.json({ result });
+              const payload = {
+                _id: user._id,
+                username: user.username
+              };
+              jwt.sign(
+                payload,
+                process.env.TOKEN_SECRET,
+                {
+                  expiresIn: '1d'
+                },
+                (err, token) => {
+                  if (err) {
+                    respondError422(res, next);
+                  } else {
+                    res.json({
+                      token
+                    });
+                  }
+                }
+              );
             } else {
               respondError422(res, next);
             }

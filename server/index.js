@@ -2,6 +2,8 @@ const express = require('express');
 const volleyball = require('volleyball');
 const cors = require('cors');
 
+require('dotenv').config();
+
 const app = express();
 
 // do not need to require auth/index because node knows to automatically grab the file 'index'
