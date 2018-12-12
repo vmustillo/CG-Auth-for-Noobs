@@ -92,7 +92,7 @@ export default {
             });
           })
           .then(user => {
-            this.$router.push('/login');
+            this.$router.push('/dashboard');
           })
           .catch(error => {
             this.errorMessage = error.message;
