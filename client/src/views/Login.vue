@@ -14,6 +14,7 @@
           id="username"
           aria-describedby="usernameHelp"
           placeholder="Enter a username"
+          autocomplete="on"
           required
         >
         <h5 id="usernameHelp" class="form-text text-muted">Enter username to login.</h5>
@@ -27,6 +28,7 @@
           id="password"
           aria-describedby="passwordHelp"
           placeholder="Enter a password"
+          autocomplete="on"
           required
         >
         <h5 id="passwordHelp" class="form-text text-muted">Enter password to login.</h5>
@@ -51,10 +53,6 @@ const schema = Joi.object().keys({
     .trim()
     .min(10)
     .required(),
-  confirmPassword: Joi.string()
-    .trim()
-    .min(10)
-    .required()
 });
 
 
@@ -82,20 +80,21 @@ export default {
           body: JSON.stringify(body),
         })
         .then(response => {
-            if (response.ok) {
-              return response.json();
-            }
-
-            response.json().then(error => {
-              throw new Error(error.message);
-            });
-          })
-          .then(user => {
-            this.$router.push('/login');
-          })
-          .catch(error => {
-            this.errorMessage = error.message;
+          if (response.ok) {
+            return response.json();
+          }
+          response.json().then(error => {
+            throw new Error(error.message);
           });
+        })
+        .then((result) => {
+          console.log(result);
+          localStorage.token = result.token;
+          this.$router.push('/dashboard');
+        })
+        .catch(error => {
+          this.errorMessage = error.message;
+        });
       }
     },
     validUser() {
@@ -107,6 +106,7 @@ export default {
       if (result.error.message.includes('username')) {
         this.errorMessage = 'Username is invalid';
       } else {
+        console.log(result.error.message);
         this.errorMessage = 'Password is invalid';
       }
       return false;
