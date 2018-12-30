@@ -6,20 +6,24 @@ require('dotenv').config();
 
 const app = express();
 
+const middlewares = require('./auth/middlewares');
+
 // do not need to require auth/index because node knows to automatically grab the file 'index'
-const auth = require('./auth');
+const auth = require('./auth/');
 
 app.use(volleyball);
 app.use(
   cors({
-    origin: 'http://localhost:8080'
+    origin: 'http://localhost:8080',
   })
 );
 app.use(express.json());
+app.use(middlewares.checkTokenSetUser);
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Hello World'
+    message: 'Hello World',
+    user: req.user,
   });
 });
 
@@ -35,7 +39,7 @@ function errorHandler(err, req, res, next) {
   res.status(res.statusCode || 500);
   res.json({
     message: err.message,
-    stack: err.stack
+    stack: err.stack,
   });
 }
 

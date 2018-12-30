@@ -86,12 +86,12 @@ export default {
             if (response.ok) {
               return response.json();
             }
-
-            response.json().then(error => {
+            return response.json().then(error => {
               throw new Error(error.message);
             });
           })
-          .then(user => {
+          .then((result) => {
+            localStorage.token = result.token;
             this.$router.push('/dashboard');
           })
           .catch(error => {
