@@ -10,12 +10,13 @@ const middlewares = require('./auth/middlewares');
 
 // do not need to require auth/index because node knows to automatically grab the file 'index'
 const auth = require('./auth/');
+const notes = require('./api/notes');
 
 app.use(volleyball);
 app.use(
   cors({
     origin: 'http://localhost:8080',
-  })
+  }),
 );
 app.use(express.json());
 app.use(middlewares.checkTokenSetUser);
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', auth);
+app.use('/api/v1/notes', middlewares.isLoggedIn, notes);
 
 function notFound(req, res, next) {
   res.status(404);
